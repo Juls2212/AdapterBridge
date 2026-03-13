@@ -1,6 +1,6 @@
-package src.patterns;
+package patterns;
 
-import src.model.Muestra;
+import model.Muestra;
 
 public interface ModoProcesamiento {
     String ejecutar(Muestra muestra, EquipoLaboratorio equipo, String tipoAnalisis);
