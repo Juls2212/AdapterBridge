@@ -3,87 +3,94 @@ package patterns;
 import model.Muestra;
 
 public abstract class Analisis {
-    protected ModoProcesamiento modoProcesamiento;
 
-    public Analisis(ModoProcesamiento modoProcesamiento) {
-        this.modoProcesamiento = modoProcesamiento;
+    protected ModoProcesamiento processingMode;
+
+    public Analisis(ModoProcesamiento processingMode) {
+        this.processingMode = processingMode;
     }
 
-    public abstract String getNombreAnalisis();
+    public abstract String getAnalysisName();
 
-    protected abstract String generarInterpretacion(String resultadoBase);
+    protected abstract String interpretResult(String baseResult);
 
-    public String procesar(Muestra muestra, EquipoLaboratorio equipo) {
-        String resultadoBase = modoProcesamiento.ejecutar(muestra, equipo, getNombreAnalisis());
-        return generarInterpretacion(resultadoBase);
+    public String process(Muestra sample, EquipoLaboratorio equipment) {
+
+        String baseResult = processingMode.execute(sample, equipment, getAnalysisName());
+
+        return interpretResult(baseResult);
     }
 
-    public String getNombreModoProcesamiento() {
-        return modoProcesamiento.getNombreModo();
+    public String getProcessingModeName() {
+        return processingMode.getModeName();
     }
 
-    public static Analisis crear(String tipoAnalisis, ModoProcesamiento modoProcesamiento) {
-        if (tipoAnalisis == null) {
-            throw new IllegalArgumentException("Debe seleccionar un tipo de análisis.");
-        }
+    public static Analisis create(String type, ModoProcesamiento mode) {
 
-        switch (tipoAnalisis) {
-            case "Hematología":
-                return new AnalisisHematologia(modoProcesamiento);
-            case "Química sanguínea":
-                return new AnalisisQuimicaSanguinea(modoProcesamiento);
-            case "Microbiología":
-                return new AnalisisMicrobiologia(modoProcesamiento);
+        switch (type) {
+
+            case "Hematology":
+                return new HematologyAnalysis(mode);
+
+            case "Blood chemistry":
+                return new BloodChemistryAnalysis(mode);
+
+            case "Microbiology":
+                return new MicrobiologyAnalysis(mode);
+
             default:
-                throw new IllegalArgumentException("Tipo de análisis no reconocido: " + tipoAnalisis);
+                throw new IllegalArgumentException("Unknown analysis type");
         }
     }
 }
 
-class AnalisisHematologia extends Analisis {
-    public AnalisisHematologia(ModoProcesamiento modoProcesamiento) {
-        super(modoProcesamiento);
+class HematologyAnalysis extends Analisis {
+
+    public HematologyAnalysis(ModoProcesamiento mode) {
+        super(mode);
     }
 
     @Override
-    public String getNombreAnalisis() {
-        return "Hematología";
+    public String getAnalysisName() {
+        return "Hematology";
     }
 
     @Override
-    protected String generarInterpretacion(String resultadoBase) {
-        return resultadoBase + "\nInterpretación: Serie roja y blanca sin alteraciones relevantes.";
+    protected String interpretResult(String result) {
+        return result + "\nInterpretation: Blood cell counts within normal range.";
     }
 }
 
-class AnalisisQuimicaSanguinea extends Analisis {
-    public AnalisisQuimicaSanguinea(ModoProcesamiento modoProcesamiento) {
-        super(modoProcesamiento);
+class BloodChemistryAnalysis extends Analisis {
+
+    public BloodChemistryAnalysis(ModoProcesamiento mode) {
+        super(mode);
     }
 
     @Override
-    public String getNombreAnalisis() {
-        return "Química sanguínea";
+    public String getAnalysisName() {
+        return "Blood chemistry";
     }
 
     @Override
-    protected String generarInterpretacion(String resultadoBase) {
-        return resultadoBase + "\nInterpretación: Glucosa y perfil básico dentro de límites esperados.";
+    protected String interpretResult(String result) {
+        return result + "\nInterpretation: Metabolic parameters normal.";
     }
 }
 
-class AnalisisMicrobiologia extends Analisis {
-    public AnalisisMicrobiologia(ModoProcesamiento modoProcesamiento) {
-        super(modoProcesamiento);
+class MicrobiologyAnalysis extends Analisis {
+
+    public MicrobiologyAnalysis(ModoProcesamiento mode) {
+        super(mode);
     }
 
     @Override
-    public String getNombreAnalisis() {
-        return "Microbiología";
+    public String getAnalysisName() {
+        return "Microbiology";
     }
 
     @Override
-    protected String generarInterpretacion(String resultadoBase) {
-        return resultadoBase + "\nInterpretación: No se observan hallazgos microbiológicos de alarma.";
+    protected String interpretResult(String result) {
+        return result + "\nInterpretation: No microbiological risk detected.";
     }
 }

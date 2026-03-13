@@ -1,49 +1,50 @@
 package model;
 
 public class Muestra {
-    private String codigo;
-    private String paciente;
-    private String tipoMuestra;
-    private String prioridad;
-    private String estado;
 
-    public Muestra(String codigo, String paciente, String tipoMuestra, String prioridad) {
-        this.codigo = codigo;
-        this.paciente = paciente;
-        this.tipoMuestra = tipoMuestra;
-        this.prioridad = prioridad;
-        this.estado = "Registrada";
+    private String code;
+    private String patient;
+    private String sampleType;
+    private String priority;
+    private String status;
+
+    public Muestra(String code, String patient, String sampleType, String priority) {
+        this.code = code;
+        this.patient = patient;
+        this.sampleType = sampleType;
+        this.priority = priority;
+        this.status = "Registered";
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getCode() {
+        return code;
     }
 
-    public String getPaciente() {
-        return paciente;
+    public String getPatient() {
+        return patient;
     }
 
-    public String getTipoMuestra() {
-        return tipoMuestra;
+    public String getSampleType() {
+        return sampleType;
     }
 
-    public String getPrioridad() {
-        return prioridad;
+    public String getPriority() {
+        return priority;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getStatus() {
+        return status;
     }
 
-    public void actualizarEstado(String nuevoEstado) {
-        this.estado = nuevoEstado;
+    public void updateStatus(String newStatus) {
+        this.status = newStatus;
     }
 
-    public String getResumen() {
-        return "Código: " + codigo +
-               "\nPaciente: " + paciente +
-               "\nTipo de muestra: " + tipoMuestra +
-               "\nPrioridad: " + prioridad +
-               "\nEstado: " + estado;
+    public String getSummary() {
+        return "Code: " + code +
+                "\nPatient: " + patient +
+                "\nSample Type: " + sampleType +
+                "\nPriority: " + priority +
+                "\nStatus: " + status;
     }
 }

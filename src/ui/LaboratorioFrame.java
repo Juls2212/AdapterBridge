@@ -1,181 +1,186 @@
-package src.ui;
+package ui;
 
-import src.model.Muestra;
-import src.service.LaboratorioService;
+import model.Muestra;
+import service.LaboratorioService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class LaboratorioFrame extends JFrame {
+
     private final LaboratorioService service;
-    private Muestra muestraActual;
+    private Muestra currentSample;
 
-    private JTextField txtCodigo;
-    private JTextField txtPaciente;
-    private JTextField txtTipoMuestra;
+    private JTextField txtCode;
+    private JTextField txtPatient;
+    private JTextField txtSampleType;
 
-    private JComboBox<String> cbPrioridad;
-    private JComboBox<String> cbAnalisis;
-    private JComboBox<String> cbModo;
-    private JComboBox<String> cbEquipo;
+    private JComboBox<String> cbPriority;
+    private JComboBox<String> cbAnalysis;
+    private JComboBox<String> cbProcessingMode;
+    private JComboBox<String> cbEquipment;
 
-    private JTextArea areaResultado;
+    private JTextArea resultArea;
 
     public LaboratorioFrame() {
         this.service = new LaboratorioService();
-        inicializarVentana();
-        inicializarComponentes();
+        initializeWindow();
+        initializeComponents();
     }
 
-    private void inicializarVentana() {
-        setTitle("Sistema de Procesamiento de Muestras Clínicas");
+    private void initializeWindow() {
+        setTitle("Clinical Sample Processing System");
         setSize(900, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
     }
 
-    private void inicializarComponentes() {
-        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
-        panelPrincipal.setBorder(new EmptyBorder(15, 15, 15, 15));
-        panelPrincipal.setBackground(new Color(245, 247, 250));
+    private void initializeComponents() {
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(245, 247, 250));
 
-        JLabel titulo = new JLabel("Laboratorio Clínico - Demo de Bridge y Adapter", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
-        titulo.setForeground(new Color(33, 37, 41));
-        panelPrincipal.add(titulo, BorderLayout.NORTH);
+        JLabel titleLabel = new JLabel("Clinical Laboratory - Bridge and Adapter Demo", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setForeground(new Color(33, 37, 41));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel centro = new JPanel(new GridLayout(1, 2, 15, 15));
-        centro.setOpaque(false);
+        JPanel centerPanel = new JPanel(new GridLayout(1, 2, 15, 15));
+        centerPanel.setOpaque(false);
 
-        centro.add(crearPanelFormulario());
-        centro.add(crearPanelResultados());
+        centerPanel.add(createFormPanel());
+        centerPanel.add(createResultPanel());
 
-        panelPrincipal.add(centro, BorderLayout.CENTER);
-        add(panelPrincipal, BorderLayout.CENTER);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
     }
 
-    private JPanel crearPanelFormulario() {
+    private JPanel createFormPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createTitledBorder("Registro y procesamiento"));
+        panel.setBorder(BorderFactory.createTitledBorder("Registration and Processing"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
 
-        txtCodigo = new JTextField();
-        txtPaciente = new JTextField();
-        txtTipoMuestra = new JTextField();
+        txtCode = new JTextField();
+        txtPatient = new JTextField();
+        txtSampleType = new JTextField();
 
-        cbPrioridad = new JComboBox<>(new String[]{"Normal", "Alta", "Crítica"});
-        cbAnalisis = new JComboBox<>(new String[]{"Hematología", "Química sanguínea", "Microbiología"});
-        cbModo = new JComboBox<>(new String[]{"Automático", "Manual supervisado", "Urgente"});
-        cbEquipo = new JComboBox<>(new String[]{"Equipo moderno", "Equipo legado hematológico", "Equipo externo microbiológico"});
+        cbPriority = new JComboBox<>(new String[]{"Normal", "High", "Critical"});
+        cbAnalysis = new JComboBox<>(new String[]{"Hematology", "Blood chemistry", "Microbiology"});
+        cbProcessingMode = new JComboBox<>(new String[]{"Automatic", "Manual supervised", "Urgent"});
+        cbEquipment = new JComboBox<>(new String[]{
+                "Modern equipment",
+                "Legacy hematology machine",
+                "External microbiology device"
+        });
 
-        int y = 0;
-        agregarCampo(panel, gbc, y++, "Código de muestra:", txtCodigo);
-        agregarCampo(panel, gbc, y++, "Paciente:", txtPaciente);
-        agregarCampo(panel, gbc, y++, "Tipo de muestra:", txtTipoMuestra);
-        agregarCampo(panel, gbc, y++, "Prioridad:", cbPrioridad);
-        agregarCampo(panel, gbc, y++, "Tipo de análisis:", cbAnalisis);
-        agregarCampo(panel, gbc, y++, "Modo de procesamiento:", cbModo);
-        agregarCampo(panel, gbc, y++, "Equipo:", cbEquipo);
+        int row = 0;
+        addField(panel, gbc, row++, "Sample code:", txtCode);
+        addField(panel, gbc, row++, "Patient:", txtPatient);
+        addField(panel, gbc, row++, "Sample type:", txtSampleType);
+        addField(panel, gbc, row++, "Priority:", cbPriority);
+        addField(panel, gbc, row++, "Analysis type:", cbAnalysis);
+        addField(panel, gbc, row++, "Processing mode:", cbProcessingMode);
+        addField(panel, gbc, row++, "Equipment:", cbEquipment);
 
-        JPanel panelBotones = new JPanel(new GridLayout(1, 3, 10, 0));
-        panelBotones.setOpaque(false);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+        buttonPanel.setOpaque(false);
 
-        JButton btnRegistrar = new JButton("Registrar muestra");
-        JButton btnProcesar = new JButton("Procesar");
-        JButton btnLimpiar = new JButton("Limpiar");
+        JButton btnRegister = new JButton("Register Sample");
+        JButton btnProcess = new JButton("Process");
+        JButton btnClear = new JButton("Clear");
 
-        btnRegistrar.addActionListener(e -> registrarMuestra());
-        btnProcesar.addActionListener(e -> procesarMuestra());
-        btnLimpiar.addActionListener(e -> limpiarFormulario());
+        btnRegister.addActionListener(e -> registerSample());
+        btnProcess.addActionListener(e -> processSample());
+        btnClear.addActionListener(e -> clearForm());
 
-        panelBotones.add(btnRegistrar);
-        panelBotones.add(btnProcesar);
-        panelBotones.add(btnLimpiar);
+        buttonPanel.add(btnRegister);
+        buttonPanel.add(btnProcess);
+        buttonPanel.add(btnClear);
 
         gbc.gridx = 0;
-        gbc.gridy = y;
+        gbc.gridy = row;
         gbc.gridwidth = 2;
-        panel.add(panelBotones, gbc);
+        panel.add(buttonPanel, gbc);
 
         return panel;
     }
 
-    private JPanel crearPanelResultados() {
+    private JPanel createResultPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createTitledBorder("Salida del sistema"));
+        panel.setBorder(BorderFactory.createTitledBorder("System Output"));
 
-        areaResultado = new JTextArea();
-        areaResultado.setEditable(false);
-        areaResultado.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        areaResultado.setLineWrap(true);
-        areaResultado.setWrapStyleWord(true);
-        areaResultado.setText("Aquí aparecerá el reporte del laboratorio...\n");
+        resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        resultArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        resultArea.setLineWrap(true);
+        resultArea.setWrapStyleWord(true);
+        resultArea.setText("The laboratory report will appear here...\n");
 
-        JScrollPane scrollPane = new JScrollPane(areaResultado);
+        JScrollPane scrollPane = new JScrollPane(resultArea);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }
 
-    private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent componente) {
+    private void addField(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent component) {
         gbc.gridx = 0;
-        gbc.gridy = fila;
+        gbc.gridy = row;
         gbc.gridwidth = 1;
-        panel.add(new JLabel(etiqueta), gbc);
+        panel.add(new JLabel(labelText), gbc);
 
         gbc.gridx = 1;
-        panel.add(componente, gbc);
+        panel.add(component, gbc);
     }
 
-    private void registrarMuestra() {
+    private void registerSample() {
         try {
-            muestraActual = service.registrarMuestra(
-                    txtCodigo.getText(),
-                    txtPaciente.getText(),
-                    txtTipoMuestra.getText(),
-                    cbPrioridad.getSelectedItem().toString()
+            currentSample = service.registerSample(
+                    txtCode.getText().trim(),
+                    txtPatient.getText().trim(),
+                    txtSampleType.getText().trim(),
+                    cbPriority.getSelectedItem().toString()
             );
 
-            areaResultado.setText("Muestra registrada correctamente.\n\n" + muestraActual.getResumen());
-            JOptionPane.showMessageDialog(this, "Muestra registrada con éxito.");
+            resultArea.setText("Sample registered successfully.\n\n" + currentSample.getSummary());
+            JOptionPane.showMessageDialog(this, "Sample registered successfully.");
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void procesarMuestra() {
+    private void processSample() {
         try {
-            String reporte = service.procesarMuestra(
-                    muestraActual,
-                    cbAnalisis.getSelectedItem().toString(),
-                    cbModo.getSelectedItem().toString(),
-                    cbEquipo.getSelectedItem().toString()
+            String report = service.processSample(
+                    currentSample,
+                    cbAnalysis.getSelectedItem().toString(),
+                    cbProcessingMode.getSelectedItem().toString(),
+                    cbEquipment.getSelectedItem().toString()
             );
 
-            areaResultado.setText(reporte);
-            JOptionPane.showMessageDialog(this, "Muestra procesada correctamente.");
+            resultArea.setText(report);
+            JOptionPane.showMessageDialog(this, "Sample processed successfully.");
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error del sistema", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "System Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void limpiarFormulario() {
-        txtCodigo.setText("");
-        txtPaciente.setText("");
-        txtTipoMuestra.setText("");
-        cbPrioridad.setSelectedIndex(0);
-        cbAnalisis.setSelectedIndex(0);
-        cbModo.setSelectedIndex(0);
-        cbEquipo.setSelectedIndex(0);
-        areaResultado.setText("Aquí aparecerá el reporte del laboratorio...\n");
-        muestraActual = null;
+    private void clearForm() {
+        txtCode.setText("");
+        txtPatient.setText("");
+        txtSampleType.setText("");
+        cbPriority.setSelectedIndex(0);
+        cbAnalysis.setSelectedIndex(0);
+        cbProcessingMode.setSelectedIndex(0);
+        cbEquipment.setSelectedIndex(0);
+        resultArea.setText("The laboratory report will appear here...\n");
+        currentSample = null;
     }
 }

@@ -3,66 +3,78 @@ package patterns;
 import model.Muestra;
 
 public interface ModoProcesamiento {
-    String ejecutar(Muestra muestra, EquipoLaboratorio equipo, String tipoAnalisis);
-    String getNombreModo();
 
-    static ModoProcesamiento crear(String modo) {
-        if (modo == null) {
-            throw new IllegalArgumentException("Debe seleccionar un modo de procesamiento.");
-        }
+    String execute(Muestra sample, EquipoLaboratorio equipment, String analysisType);
 
-        switch (modo) {
-            case "Automático":
-                return new ProcesamientoAutomatico();
-            case "Manual supervisado":
-                return new ProcesamientoManual();
-            case "Urgente":
-                return new ProcesamientoUrgente();
+    String getModeName();
+
+    static ModoProcesamiento create(String mode) {
+
+        switch (mode) {
+
+            case "Automatic":
+                return new AutomaticProcessing();
+
+            case "Manual supervised":
+                return new ManualProcessing();
+
+            case "Urgent":
+                return new UrgentProcessing();
+
             default:
-                throw new IllegalArgumentException("Modo no reconocido: " + modo);
+                throw new IllegalArgumentException("Unknown processing mode");
         }
     }
 }
 
-class ProcesamientoAutomatico implements ModoProcesamiento {
+class AutomaticProcessing implements ModoProcesamiento {
+
     @Override
-    public String ejecutar(Muestra muestra, EquipoLaboratorio equipo, String tipoAnalisis) {
-        equipo.inicializar();
-        equipo.analizarMuestra(muestra, tipoAnalisis);
-        return "Procesamiento automático completado.\n" + equipo.obtenerResultado();
+    public String execute(Muestra sample, EquipoLaboratorio equipment, String analysisType) {
+
+        equipment.initialize();
+        equipment.analyzeSample(sample, analysisType);
+
+        return "Automatic processing completed.\n" + equipment.getResult();
     }
 
     @Override
-    public String getNombreModo() {
-        return "Automático";
-    }
-}
-
-class ProcesamientoManual implements ModoProcesamiento {
-    @Override
-    public String ejecutar(Muestra muestra, EquipoLaboratorio equipo, String tipoAnalisis) {
-        equipo.inicializar();
-        equipo.analizarMuestra(muestra, tipoAnalisis);
-        return "Procesamiento manual supervisado completado.\nVerificación del analista realizada.\n"
-                + equipo.obtenerResultado();
-    }
-
-    @Override
-    public String getNombreModo() {
-        return "Manual supervisado";
+    public String getModeName() {
+        return "Automatic";
     }
 }
 
-class ProcesamientoUrgente implements ModoProcesamiento {
+class ManualProcessing implements ModoProcesamiento {
+
     @Override
-    public String ejecutar(Muestra muestra, EquipoLaboratorio equipo, String tipoAnalisis) {
-        equipo.inicializar();
-        equipo.analizarMuestra(muestra, tipoAnalisis);
-        return "Procesamiento urgente completado con prioridad alta.\n" + equipo.obtenerResultado();
+    public String execute(Muestra sample, EquipoLaboratorio equipment, String analysisType) {
+
+        equipment.initialize();
+        equipment.analyzeSample(sample, analysisType);
+
+        return "Manual supervised processing completed.\n" +
+                equipment.getResult();
     }
 
     @Override
-    public String getNombreModo() {
-        return "Urgente";
+    public String getModeName() {
+        return "Manual supervised";
+    }
+}
+
+class UrgentProcessing implements ModoProcesamiento {
+
+    @Override
+    public String execute(Muestra sample, EquipoLaboratorio equipment, String analysisType) {
+
+        equipment.initialize();
+        equipment.analyzeSample(sample, analysisType);
+
+        return "Urgent processing completed.\n" + equipment.getResult();
+    }
+
+    @Override
+    public String getModeName() {
+        return "Urgent";
     }
 }
